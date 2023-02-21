@@ -1,3 +1,4 @@
+
 <!DOCTYPE html><!--[if lt IE 7]><html class="no-js ie6 oldie" lang="ko"><![endif]--><!--[if IE 7]><html class="no-js ie7 oldie" lang="ko"><![endif]--><!--[if IE 8]><html class="no-js ie8 oldie" lang="ko"><![endif]--><!--[if gt IE 8]><!--><html lang="ko"><!--<![endif]-->	
 <head>
 	<link rel="preconnect" href="https://fonts.googleapis.com">
@@ -503,9 +504,7 @@
 	let experience = new Experience(container, 400, 300);
 	
 	function DeviceCheckUp() {
-	
 		var os;
-	
 		var mobile = (/iphone|ipad|ipod|android/i.test(navigator.userAgent.toLowerCase()));
 	
 		if (mobile) {
@@ -517,44 +516,58 @@
 			} else {
 				return os = "otehr";
 			}
-	
 		} else {
 			return os = "pc";
 		}
 	}
-	
-	
-	function GoToBelleeplay(android_url, ios_url, ios_appstore_url) {
+	function GoToBelleeplay(android_url, ios_url) {
 		var result_DeviceCheckUp = DeviceCheckUp();
-	
 		if (result_DeviceCheckUp != "pc") {
 			if (result_DeviceCheckUp == "ios") {
-	
 				setTimeout(function() {
-					window.open(ios_appstore_url);
+					window.open('https://apps.apple.com/kr/app/id1560654564?mt=8');
 				}, 1500);
-	
 				location.href = ios_url;
 			} else {
 				location.href = android_url;
 			}
 		}
 	}
-		window.onload=function(){
-		GoToBelleeplay('intent://beellee.com/#Intent;package=com.beellee.official;scheme=https;end', 'beellee://media', 'https://apps.apple.com/kr/app/id1560654564?mt=8');
+	const properPath = ['item', 'my_subscription', 'subscriptionItem', 'subscribeItem', 'subscription', 'cat', 'search', 'event', 'eventSingle', 'ItemStandardList', 'rent', 'notice', 'chat', 'faq', 'faqSingle', 'magazine', 'magazineSingle', 'myRental', 'contact_scenario', 'add_new_item', 'promotion'];
+	let androidUrl = 'intent://beellee.com/#Intent;package=com.beellee.official;scheme=https;end';
+	let iOSUrl = 'beellee://media';
+	iOSUrl = 'beellee://beelleeplay.com';
+	
+	var pathArray = window.location.pathname.split('/');
+	var newPathname = "";
+	
+	if (typeof pathArray[1] !== 'undefined' && pathArray[1].length > 0) newPathname += pathArray[1]+'/';
+	if (typeof pathArray[2] !== 'undefined' && pathArray[2].length > 0) newPathname += pathArray[2]+'/';
+	
+	
+	
+	if (newPathname.length > 0 && properPath.includes(pathArray[1]) == true) {
+		androidUrl = 'intent://beellee.com/'+newPathname+'#Intent;package=com.beellee.official;scheme=https;end';
+		iOSUrl = 'beellee://beelleeplay.com/'+newPathname;
 	}
-		document.querySelector('.home').onclick = function() { 
-	   var timeSet = 1000;
-	   if (DeviceCheckUp() == "pc") timeSet = 0;
-	   setTimeout(() => { 
-		   if (DeviceCheckUp() == "pc") {
-			   location.href = "https://beelleeplay.com";
-		   } else {
-				GoToBelleeplay('intent://beellee.com/#Intent;package=com.beellee.official;scheme=https;end', 'beellee://media', 'https://apps.apple.com/kr/app/id1560654564?mt=8');   
-		   }
-		   
-	   }, timeSet);
+	if (newPathname.length > 0) window.history.pushState('', '', '/');
+	
+	window.onload=function(){
+		GoToBelleeplay(androidUrl, iOSUrl, '');
+	}
+	
+	document.querySelector('.home').onclick = function() { 
+		   var timeSet = 1000;
+		   if (DeviceCheckUp() == "pc") timeSet = 0;
+		   setTimeout(() => { 
+			   if (DeviceCheckUp() == "pc") {
+				   location.href = "https://beelleeplay.com";
+			   } else {
+					GoToBelleeplay(androidUrl, iOSUrl);
+			   }
+		   }, timeSet);
 	}; 
+	
 	</script>
 </body>
 </html>
