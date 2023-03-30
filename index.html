@@ -23,7 +23,7 @@
 	<meta property="og:type" content="website">
 	<meta name="description" content="필요할 때만 플레이! 스마트한 테크 생활의 시작">
 	 
-	<link rel="canonical" href="http://beellee.app/go">              
+	<link rel="canonical" href="http://beellee.app">              
 	<link rel="shortcut icon" href="https://beellee.app/1024.png">
 	<title>빌리플레이</title> 
 	<style>  
@@ -198,9 +198,20 @@
 		
 		var pathArray = window.location.pathname.split('/');
 		var newPathname = "";
+		let path1 = "";
+		let path2 = "";
 		
-		if (typeof pathArray[1] !== 'undefined' && pathArray[1].length > 0) newPathname += pathArray[1]+'/';
-		if (typeof pathArray[2] !== 'undefined' && pathArray[2].length > 0) newPathname += pathArray[2]+'/';
+		if (typeof pathArray[1] !== 'undefined' && pathArray[1].length > 0) {
+			path1 = pathArray[1];
+			newPathname += pathArray[1]+'/';
+		}
+		if (typeof pathArray[2] !== 'undefined' && pathArray[2].length > 0) {
+			path2 = pathArray[2];
+			newPathname += pathArray[2]+'/';
+		}
+		const referrer = document.referrer;
+		
+		
 		
 		
 		
@@ -215,16 +226,46 @@
 		}
 		
 		document.getElementById("go-btn").onclick = function() { 
-	   	var timeSet = 1000;
-	   	if (DeviceCheckUp() == "pc") timeSet = 0;
-	   	setTimeout(() => { 
-		   	if (DeviceCheckUp() == "pc") {
-			   	location.href = "https://beelleeplay.com";
-		   	} else {
+		   var timeSet = 1000;
+		   if (DeviceCheckUp() == "pc") timeSet = 0;
+		   
+		   setTimeout(() => { 
+			   if (DeviceCheckUp() == "pc") {
+				   location.href = "https://beelleeplay.com";
+			   } else {
 					GoToBelleeplay(androidUrl, iOSUrl);
-		   	}
-	   	}, timeSet);
+			   }
+		   }, timeSet);
 		}; 
+		
+		function sendLogData() {
+			var myHeaders = new Headers();
+			myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+			
+			var urlencoded = new URLSearchParams();
+			urlencoded.append("os", DeviceCheckUp());
+			urlencoded.append("path1", path1);
+			urlencoded.append("path2", path2);
+			urlencoded.append("referrer", referrer);
+			urlencoded.append("datetime", 111);
+			
+			var requestOptions = {
+				method: 'POST',
+				headers: myHeaders,
+				body: urlencoded,
+				redirect: 'follow'
+			};
+			
+			fetch("https://beellee-app-log.3f452250336b84d71b5373813a03eeb5.workers.dev/api/add", requestOptions)
+			  .then(response => response.text())
+			  .then(result => console.log(result))
+			  .catch(error => console.log('error', error));
+		}
+		
+		async function asyncCall() { 
+			const result = await sendLogData();  
+		}
+		asyncCall();
 	
 	
 	</script>
